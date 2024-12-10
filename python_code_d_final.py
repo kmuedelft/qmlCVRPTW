@@ -81,6 +81,11 @@ for i in Nodes:
         for w in range(len(time_windows[int(i)])):
             z[i, v, w] = m.addVar(vtype=GRB.BINARY, lb=0, name='z_%s_%s_%s' % (i, v, w))
 
+# Counter of vehicles
+y = {}
+for v in Vehicles:
+    y[v] = m.addVar(vtype = GRB.CONTINUOUS, lb = 0, name='y_%s' % (y))
+
 m.update()
 
 # ---------- Objective Function ----------
@@ -116,15 +121,15 @@ for i in Nodes:
             quicksum(z[i,v,w] for v in Vehicles for w in range(len(time_windows[int(i)]))) == 1, 'con3[' + str(i) + ',' + str(v) + ',' + str(w) + ']'
         )
     
-# each vehicle starts and ends at the depot
+# each used vehicle starts and ends at the depot
 con4 = {}
 con5 = {}
 for v in Vehicles:
     con4[v] = m.addConstr(
-        quicksum(edge[0,i,v] for i in Nodes if i != 0) == 1, 'con4[' + str(v) + ']'
+        quicksum(edge[0,i,v] for i in Nodes if i != 0) <= y[v], 'con4[' + str(v) + ']'
     )
     con5[v] = m.addConstr(
-        quicksum(edge[i,0,v] for i in Nodes if i != 0) == 1, 'con5[' + str(v) + ']'
+        quicksum(edge[i,0,v] for i in Nodes if i != 0) <= y[v], 'con5[' + str(v) + ']'
     )
 
 # Capacity constraint
