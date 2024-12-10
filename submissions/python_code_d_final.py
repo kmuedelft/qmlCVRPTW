@@ -126,10 +126,10 @@ con4 = {}
 con5 = {}
 for v in Vehicles:
     con4[v] = m.addConstr(
-        quicksum(edge[0,i,v] for i in Nodes if i != 0) <= y[v], 'con4[' + str(v) + ']'
+        quicksum(edge[0,i,v] for i in Nodes if i != 0) <= 1, 'con4[' + str(v) + ']'
     )
     con5[v] = m.addConstr(
-        quicksum(edge[i,0,v] for i in Nodes if i != 0) <= y[v], 'con5[' + str(v) + ']'
+        quicksum(edge[i,0,v] for i in Nodes if i != 0) <= 1, 'con5[' + str(v) + ']'
     )
 
 # Capacity constraint
