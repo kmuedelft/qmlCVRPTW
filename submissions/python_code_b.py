@@ -68,8 +68,6 @@ for i in Nodes:
     for v in Vehicles:
         z[i,v] = m.addVar(vtype=GRB.BINARY, lb = 0, name='z_%s_%s' % (i, v))
 
-use_vehicle = {v: m.addVar(vtype=GRB.BINARY, name=f'use_vehicle_{v}') for v in Vehicles}
-
 
 m.update()
 
@@ -90,7 +88,7 @@ for v in Vehicles:
             edge[i,i,v] == 0, 'con0[' + str(i) + ',' + str(j) + ']'
         )
 
-# relation between edge
+# relation between edge and z
 con1 = {}
 for i in Nodes:
     for v in Vehicles:
