@@ -113,14 +113,14 @@ for i in Nodes:
     for v in Vehicles:
             service_start[i, v] = m.addVar(vtype=GRB.CONTINUOUS, lb=0, name='t_%s_%s' % (i, v))
 
-# Continuous variable, fractional demand that is picked up at node i by vehicle v during time window w
+# Fractional demand picked up at node i by vehicle v during time window w
 frac = {}
 for i in Nodes:
     for v in Vehicles:
         for w in range(len(time_windows[int(i)])):
             frac[i,v,w] = m.addVar(vtype=GRB.CONTINUOUS, lb=0, ub=1, name='z_%s_%s_%s' % (i, v, w))
 
-# if time window w is selected for node i
+# Binary variable, 1 if time window w is selected for node i
 z = {}
 for i in Nodes:
     for w in range(len(time_windows[int(i)])):
@@ -129,6 +129,7 @@ for i in Nodes:
 m.update()
 
 # ---- Objective Function ----
+# Minimizes the total distances/time traveled
 
 obj = quicksum(distance[i,j]*edge[i,j,v] for i in Nodes for j in Nodes for v in Vehicles)
 m.setObjective(obj)
@@ -145,7 +146,7 @@ for v in Vehicles:
             edge[i,i,v] == 0, 'con1[' + str(i) + ',' + str(i) + ',' + str(v) + ']'
         )
 
-# Link edge and z
+# Relation/Link between edge and fractional demand
 con2 = {}
 for i in Nodes:
     for v in Vehicles:
@@ -214,7 +215,7 @@ for i in Nodes:
                     )
                     
 
-# Relation between z and y
+# Relation/Link between z and fractional demand
 con11 = {}
 for i in Nodes:
     for w in range(len(time_windows[int(i)])):
@@ -237,7 +238,7 @@ if m.status == GRB.OPTIMAL:
     for i in Nodes:
         for v in Vehicles:
             for w in range(len(time_windows[int(i)])):
-                if frac[i,v,w].X > 0:  # frac[i, v, w].X gibt den Wert der Variablen nach der Optimierung an
+                if frac[i,v,w].X > 0:
                     a_iw, b_iw = time_windows[int(i)][w]
                     print(f"Node {i} is visited by vehicle {v} in time window ({a_iw}, {b_iw}).")
 else:
@@ -249,7 +250,7 @@ if m.status == GRB.OPTIMAL:
     for i in Nodes:
         for v in Vehicles:
             for w in range(len(time_windows[int(i)])):
-                if frac[i,v,w].X > 0:  # Prüft, ob das Fahrzeug i im Zeitfenster w besucht
+                if frac[i,v,w].X > 0:
                     start_time = service_start[i,v].X
                     print(f"Vehicle {v} starts service at node {i} in time window {w} at {start_time:.2f}.")
 else:
