@@ -208,12 +208,10 @@ for i in Nodes:
 for i in Nodes:
     for j in Nodes:
         for v in Vehicles:
-            for w in range(len(time_windows[int(i)])):   
-                if i != j and j != 0:
-                    con10[i,j,v,w] = m.addConstr(
-                        service_start[j, v] >= service_start[i, v] + service_duration[int(i)] + distance[i, j] - BIGM * (1 - edge[i, j, v]), 'con10[' + str(i) + ',' + str(j) + ',' + str(v) + ',' + str(w) + ']'
-                    )
-                    
+            if i != j and j != 0:
+                con10[i,j,v] = m.addConstr(
+                    service_start[j, v] >= service_start[i, v] + service_duration[int(i)] + distance[i, j] - BIGM * (1 - edge[i, j, v]), 'con10[' + str(i) + ',' + str(j) + ',' + str(v) + ']'
+                )
 
 # Relation/Link between z and fractional demand
 con11 = {}
