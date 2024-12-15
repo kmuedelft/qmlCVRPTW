@@ -184,9 +184,9 @@ for v in Vehicles:
 con7 = {}
 for i in Nodes:
     for v in Vehicles:
-        con7[i, j, v] = m.addConstr(
+        con7[i,v] = m.addConstr(
             quicksum(edge[i, j, v] for j in Nodes) == quicksum(edge[j, i, v] for j in Nodes),
-            'con7[' + str(i) + ',' + str(j) + ',' + str(v) + ']'
+            'con7[' + str(i) + ',' + str(v) + ']'
         )
 
 # time window constraints
@@ -199,10 +199,10 @@ for i in Nodes:
         for w in range(len(time_windows[int(i)])):
             a_iw, b_iw = time_windows[int(i)][w]
             con8[i,v,w] = m.addConstr(
-                service_start[i,v] + BIGM * (1 - z[i,w]) >= a_iw, 'con8[' + str(i) + ',' + str(v) + str(w) + ']'
+                service_start[i,v] + BIGM * (1 - z[i,w]) >= a_iw, 'con8[' + str(i) + ',' + str(v) + ',' + str(w) + ']'
                 )
             con9[i,v,w] = m.addConstr(
-                service_start[i,v] - BIGM * (1 - z[i,w]) <= b_iw, 'con9[' + str(i) + ',' + str(v) + str(w) +']'
+                service_start[i,v] - BIGM * (1 - z[i,w]) <= b_iw, 'con9[' + str(i) + ',' + str(v) + ',' + str(w) +']'
                 )
 
 for i in Nodes:
