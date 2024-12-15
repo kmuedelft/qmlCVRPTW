@@ -293,7 +293,7 @@ if m.status == GRB.OPTIMAL:
 
     plt.xlabel('X Coordinate')
     plt.ylabel('Y Coordinate')
-    plt.title('Vehicle Routes with Loads')
+    plt.title('Vehicle Routes')
     plt.legend()
     plt.show()
 else:
